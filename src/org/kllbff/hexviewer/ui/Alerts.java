@@ -9,8 +9,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 
+/**
+ * Вспомогательный класс, упрощающий создание диалоговых окон.<br>
+ * Все методы класса могут вызываться из любого потока.
+ * 
+ * @author Кирилл Богатиков
+ *
+ */
 public class Alerts {
 
+    /**
+     * Позволяет вывести на экран окно, сообщающее об ошибке и содержащее стек вызовов 
+     * 
+     * @param throwable ошибка или исключительная ситуация
+     * @param title заголовок окна
+     * @param message сообщение об ошибке
+     */
     public static void showErrorWithStackTrace(Throwable throwable, String title, String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -29,6 +43,15 @@ public class Alerts {
         });
     }
 
+    /**
+     * Выводит окно, сообщающее об ошибке, но не содержащее стек вызовов<br>
+     * Дополнительно может вывести локализованное сообщение, содержащееся в объекте
+     * <code>throwable</code>, если этот объект не является <code>null</code>.
+     * 
+     * @param throwable ошибка или исключительная ситуация
+     * @param title заголовок окна
+     * @param message сообщение об ошибке
+     */
     public static void showError(Throwable throwable, String title, String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -41,6 +64,12 @@ public class Alerts {
         });
     }
 
+    /**
+     * Позволяет вывести информационное сообщение
+     *  
+     * @param title заголовок окна
+     * @param message сообщение об ошибке
+     */
     public static void showInfo(String title, String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

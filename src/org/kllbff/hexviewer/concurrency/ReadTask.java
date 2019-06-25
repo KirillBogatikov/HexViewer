@@ -5,10 +5,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * Позволяет выполнить чтение файла в отдельном потоке
+ * 
+ * @author Кирилл Богатиков
+ */
 public class ReadTask implements Runnable {
     private File file;
     private TaskListener listener;
 
+    /**
+     * Устанавливает читаемый файл и слушатель, используемый для оповещения о событиях
+     * 
+     * @param file читаемый файл
+     * @param listener слушатель событий
+     */
     public ReadTask(File file, TaskListener listener) {
         this.file = file;
         this.listener = listener;
