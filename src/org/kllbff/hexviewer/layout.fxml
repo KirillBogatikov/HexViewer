@@ -37,7 +37,7 @@
       </MenuBar>
       <HBox prefHeight="359.0" prefWidth="600.0">
          <children>
-            <TextArea id="string_view" prefHeight="335.0" prefWidth="200.0" wrapText="true" />
+            <TextArea id="string_view" prefHeight="335.0" prefWidth="200.0" wrapText="true"/>
             <TabPane id="hex_view_tabs_pane" prefHeight="335.0" prefWidth="400.0" />
          </children>
       </HBox>
