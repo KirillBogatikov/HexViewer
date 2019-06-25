@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:controller="org.kllbff.hexviewer.ui.UIController"
+      minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0"
+      xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar id="top_menu">
+        <menus>
+          <Menu id="open" mnemonicParsing="false" text="Открыть" onAction="#onOpenClick"/>
+            <Menu id="close" mnemonicParsing="false" text="Закрыть" onAction="#onCloseClick"/>
+            <Menu mnemonicParsing="false" text="Кодировка">
+              <items>
+                  <RadioMenuItem mnemonicParsing="false" selected="true" text="ASCII" onAction="#onEncodingChange">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="encoding" />
+                     </toggleGroup>
+                  </RadioMenuItem>
+                  <RadioMenuItem mnemonicParsing="false" text="UTF-8" toggleGroup="$encoding" onAction="#onEncodingChange"/>
+                  <RadioMenuItem mnemonicParsing="false" text="UTF-16" toggleGroup="$encoding" onAction="#onEncodingChange"/>
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="О приложении" onAction="#onAboutClick"/>
+            <Menu mnemonicParsing="false" text="Выход" onAction="#onExitClick"/>
+        </menus>
+      </MenuBar>
+      <HBox prefHeight="359.0" prefWidth="600.0">
+         <children>
+            <TextArea id="string_view" prefHeight="335.0" prefWidth="200.0" wrapText="true" />
+            <TabPane id="hex_view_tabs_pane" prefHeight="335.0" prefWidth="400.0" />
+         </children>
+      </HBox>
+      <HBox prefHeight="40.0" prefWidth="600.0">
+         <children>
+            <Label prefHeight="40.0" prefWidth="153.0" text="Общий размер файла:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label prefHeight="40.0" prefWidth="127.0" text="0 байт" id="file_size">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label prefHeight="40.0" prefWidth="129.0" text="Дата изменения:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label prefHeight="40.0" prefWidth="191.0" text="" id="file_modified">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children></HBox>
+   </children>
+</VBox>
