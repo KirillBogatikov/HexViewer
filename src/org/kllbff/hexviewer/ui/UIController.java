@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
@@ -125,6 +126,7 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
             scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scroll.setPrefWidth(400.0);
             GridPane pane = new GridPane();
+            pane.setPadding(new Insets(5));
             pane.setPrefWidth(385.0);
             scroll.setContent(pane);
             tab.setContent(scroll);
