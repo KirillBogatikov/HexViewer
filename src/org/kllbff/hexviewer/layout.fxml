@@ -12,8 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <VBox fx:controller="org.kllbff.hexviewer.ui.UIController"
-      minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="400.0" prefWidth="600.0"
+      prefHeight="1080" prefWidth="1920"
       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar id="top_menu">
@@ -35,30 +34,30 @@
             <Menu mnemonicParsing="false" text="Выход" onAction="#onExitClick"/>
         </menus>
       </MenuBar>
-      <HBox prefHeight="359.0" prefWidth="600.0">
+      <HBox prefHeight="1035" prefWidth="1920">
          <children>
-            <TextArea id="string_view" prefHeight="335.0" prefWidth="200.0" wrapText="true"/>
-            <TabPane id="hex_view_tabs_pane" prefHeight="335.0" prefWidth="400.0" />
+            <TextArea id="string_view" prefHeight="1035" minWidth="200" prefWidth="600" wrapText="true"/>
+            <TabPane id="hex_view_tabs_pane" prefHeight="1035" prefWidth="1320" />
          </children>
       </HBox>
-      <HBox prefHeight="40.0" prefWidth="600.0">
+      <HBox prefHeight="40.0" prefWidth="1920">
          <children>
-            <Label prefHeight="40.0" prefWidth="153.0" text="Общий размер файла:">
+            <Label prefHeight="40.0" prefWidth="500" text="Общий размер файла:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label prefHeight="40.0" prefWidth="127.0" text="0 байт" id="file_size">
+            <Label prefHeight="40.0" prefWidth="500" text="0 байт" id="file_size">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label prefHeight="40.0" prefWidth="129.0" text="Дата изменения:">
+            <Label prefHeight="40.0" prefWidth="500" text="Дата изменения:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label prefHeight="40.0" prefWidth="191.0" text="" id="file_modified">
+            <Label prefHeight="40.0" prefWidth="500" text="" id="file_modified">
                <font>
                   <Font size="14.0" />
                </font>
