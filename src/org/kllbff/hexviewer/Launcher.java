@@ -17,7 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
-    public static final ExecutorService workloadThread = Executors.newFixedThreadPool(2);
+    public static final ExecutorService workloadThread = Executors.newFixedThreadPool(4);
 
     private Label fileSize, fileModified;
     private TextArea stringView;
@@ -32,18 +32,17 @@ public class Launcher extends Application {
         fileSize = (Label)root.lookup("#file_size");
         fileModified = (Label)root.lookup("#file_modified");
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 800, 400);
         primaryStage.setTitle("Hex Editor");
         primaryStage.setScene(scene);
-        primaryStage.show();
-        primaryStage.setOnCloseRequest((e) -> {
-            workloadThread.shutdown();
-            System.exit(0);
-        });
+        primaryStage.show();        
 
         UIController controller = UIController.initialize(primaryStage, stringView, hexTabPaneView, fileSize, fileModified);
         MenuBar menuBar = (MenuBar)root.lookup("#top_menu");
         menuBar.addEventFilter(MouseEvent.MOUSE_PRESSED, controller);
+        primaryStage.setOnCloseRequest((e) -> {
+            controller.onExitClick();
+        });
     }
 
     public static void main(String[] args) {

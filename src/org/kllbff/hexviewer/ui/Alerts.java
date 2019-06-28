@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
@@ -77,6 +78,15 @@ public class Alerts {
             alert.setHeaderText(message);
             alert.showAndWait();
         });
+    }
+    
+    public static boolean showConfirm(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().add(ButtonType.OK);
+        alert.getButtonTypes().add(ButtonType.CANCEL);
+        alert.showAndWait();
+        return alert.getResult() == ButtonType.OK;
     }
 
     private static String getStackTrace(Throwable throwable) {

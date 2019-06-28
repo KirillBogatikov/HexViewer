@@ -4,25 +4,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
-import org.kllbff.hexviewer.FilesContainer;
+import org.kllbff.hexviewer.FileInfo;
 import org.kllbff.hexviewer.Launcher;
 import org.kllbff.hexviewer.concurrency.ReadTask;
 import org.kllbff.hexviewer.concurrency.TaskListener;
+import org.kllbff.hexviewer.concurrency.WriteTask;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -54,7 +54,8 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
         return instance;
     }
 
-    private FilesContainer container = new FilesContainer();
+    private Charset currentCharset = StandardCharsets.US_ASCII;
+    private HashMap<Tab, FileInfo> openedFiles = new HashMap<>();
     private Label fileSize, fileModified;
     private Stage stage;
     private TextArea stringView;
@@ -83,8 +84,19 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
      * Вызывается при нажатии на пункт меню "Закрыть"
      */
     public void onCloseClick() {
+        openedFiles.remove(currentTab);
         tabPane.getTabs().remove(currentTab);
-        container.kick(currentTab);
+    }
+    
+    private void saveTabChanges(FileInfo fileInfo) {
+        Launcher.workloadThread.execute(new WriteTask(fileInfo.getFile(), fileInfo.getBytes(), this));
+    }
+    
+    public void onSaveClick() {
+        if(currentTab == null) {
+            return;
+        }
+        saveTabChanges(openedFiles.get(currentTab));
     }
 
     /**
@@ -102,6 +114,16 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
      * Завершает выполнение приложения
      */
     public void onExitClick() {
+        for(FileInfo fileInfo : openedFiles.values()) {
+            if(fileInfo.isChanged()) {
+                boolean confirm = Alerts.showConfirm("Сохранение файла", "Сохранить изменения в файле " + fileInfo.getFile() + "?");
+                if(confirm) {
+                    saveTabChanges(fileInfo);
+                }
+            }
+        }
+        
+        Launcher.workloadThread.shutdown();
         System.exit(0);
     }
 
@@ -113,53 +135,35 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
     @FXML
     public void onEncodingChange(ActionEvent event) {
         RadioMenuItem item = (RadioMenuItem)event.getSource();
-        container.useCharset(Charset.forName(item.getText()));
+        currentCharset = Charset.forName(item.getText());
+        stringView.setText(new String(openedFiles.get(currentTab).getBytes(), currentCharset));
     }
 
     @Override
     public void onReadSuccess(File file, byte[] bytes) {
         Platform.runLater(() -> {
-            String byteView;
-
-            Tab tab = new Tab();
-            ScrollPane scroll = new ScrollPane();
-            scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            scroll.setPrefWidth(400.0);
-            GridPane pane = new GridPane();
-            pane.setPadding(new Insets(5));
-            pane.setPrefWidth(385.0);
-            scroll.setContent(pane);
-            tab.setContent(scroll);
-
-            for(int i = 0; i < bytes.length; i++) {
-                byte b = bytes[i];
-                byteView = Integer.toHexString(b < 0 ? b + 255 : b);
-                while (byteView.length() < 2) {
-                    byteView = "0" + byteView;
-                }
-
-                Label tf = new Label(byteView);
-                tf.setPrefWidth(60.0);
-                pane.add(tf, i % 16, i / 16);
-            }
-
-            tab.setText(file.getName());
+            final FileInfo fileInfo = new FileInfo(file, bytes);
+            final FileTab tab = new FileTab(fileInfo);
             tab.setOnSelectionChanged((e) -> {
                 currentTab = ((Tab)e.getSource());
+                
+                String simpleText, fileSizeText, fileModifiedText;
+                
                 if(currentTab == null) {
-                    stringView.clear();
-                    fileSize.setText("");
-                    fileModified.setText("");
+                    simpleText = "";
+                    fileSizeText = "";
+                    fileModifiedText = "";
                 } else {
-                    stringView.setText(container.getStringContent(currentTab));
-
-                    fileSize.setText(container.getFileSize(currentTab));
-                    fileModified.setText(container.getLastModifiedDate(currentTab));
+                    simpleText = new String(fileInfo.getBytes(), currentCharset);
+                    fileSizeText = fileInfo.getFileSize();
+                    fileModifiedText = fileInfo.getLastModifiedDate();
                 }
+                
+                stringView.setText(simpleText);
+                fileSize.setText(fileSizeText);
+                fileModified.setText(fileModifiedText);
             });
-
-            container.store(tab, file, bytes);
-            currentTab = tab;
+            openedFiles.put(tab, fileInfo);
             tabPane.getTabs().add(tab);
         });
     }
@@ -189,6 +193,8 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
     @Override
     public void handle(MouseEvent event) {
         String itemName;
+        
+        System.out.println(event);
         try {
             itemName = ((Text)event.getTarget()).getText();
         } catch(ClassCastException exception) {
@@ -197,6 +203,8 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
 
         if(itemName.equals("Открыть")) {
             onOpenClick();
+        } else if(itemName.equals("Сохранить")) {
+            onSaveClick();
         } else if(itemName.equals("Закрыть")) {
             onCloseClick();
         } else if(itemName.equals("О приложении")) {
@@ -204,5 +212,24 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
         } else if(itemName.equals("Выход")) {
             onExitClick();
         }
+    }
+
+    @Override
+    public void onWriteSuccess(File file) {
+        
+    }
+
+    @Override
+    public void onWriteFail(File file, Exception exception) {
+        String message;
+        if(exception instanceof IOException) {
+            message = "Произошла ошибка ввода/вывода";
+        } else if(exception instanceof SecurityException) {
+            message = "Доступ к файлу ограничен системными настройками";
+        } else {
+            message = "Произошла неизвестная ошибка";
+        }
+        
+        Alerts.showError(exception, "Ошибка записи файла", message);
     }
 }

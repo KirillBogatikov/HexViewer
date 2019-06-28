@@ -18,6 +18,7 @@
       <MenuBar id="top_menu">
         <menus>
           <Menu id="open" mnemonicParsing="false" text="Открыть" onAction="#onOpenClick"/>
+            <Menu id="save" mnemonicParsing="false" text="Сохранить" onAction="#onSaveClick"/>
             <Menu id="close" mnemonicParsing="false" text="Закрыть" onAction="#onCloseClick"/>
             <Menu mnemonicParsing="false" text="Кодировка">
               <items>

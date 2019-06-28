@@ -31,4 +31,8 @@ public interface TaskListener {
      * @param need объем необходимой памяти, в байтах
      */
     public void onMemoryLeak(long free, long need);
+    
+    public void onWriteSuccess(File file);
+    
+    public void onWriteFail(File file, Exception e);
 }
