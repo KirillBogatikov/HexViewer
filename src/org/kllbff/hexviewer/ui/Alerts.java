@@ -82,6 +82,8 @@ public class Alerts {
     
     public static boolean showConfirm(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
         alert.getButtonTypes().clear();
         alert.getButtonTypes().add(ButtonType.OK);
         alert.getButtonTypes().add(ButtonType.CANCEL);
