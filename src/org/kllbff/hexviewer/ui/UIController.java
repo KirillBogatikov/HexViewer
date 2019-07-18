@@ -84,6 +84,13 @@ public class UIController implements TaskListener, EventHandler<MouseEvent> {
      * Вызывается при нажатии на пункт меню "Закрыть"
      */
     public void onCloseClick() {
+        FileInfo info = openedFiles.get(currentTab); 
+        if(info.isChanged()) {
+            boolean save = Alerts.showConfirm("Сохранение", "Файл был изменен, сохранить его?");
+            if(save) {
+                saveTabChanges(info);
+            }
+        }
         openedFiles.remove(currentTab);
         tabPane.getTabs().remove(currentTab);
     }
